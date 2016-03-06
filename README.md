@@ -5,7 +5,7 @@ Free viewer of your calculator's screen based on libticalcs2.
 ## Dependencies
 
 ```
-sudo apt-get install libgtk-3-dev libticables-dev libtifiles-dev libticalcs-dev
+sudo apt-get install cmake valac libgtk-3-dev libticables-dev libtifiles-dev libticalcs-dev
 ```
 
 ## Compile

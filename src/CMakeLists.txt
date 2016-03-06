@@ -7,7 +7,6 @@ vala_precompile (VALA_C
 PACKAGES
     gtk+-3.0
     gio-2.0
-    granite
     posix
     ticables2
     tifiles2
