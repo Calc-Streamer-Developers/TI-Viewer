@@ -62,7 +62,6 @@ public class Viewer.MainWindow : Gtk.Window {
         main_box = new Gtk.Box (Gtk.Orientation.VERTICAL, 0);
 
         info_bar = new Gtk.InfoBar ();
-        info_bar.show_close_button = true;
         info_bar.message_type = Gtk.MessageType.INFO;
 
         info_label = new Gtk.Label ("Es wird nach Taschenrechnern gesucht…");
@@ -101,12 +100,10 @@ public class Viewer.MainWindow : Gtk.Window {
 
         calc_manager.unsupported_device.connect (() => {
             show_info_bar (Gtk.MessageType.WARNING, "Der verbundene Taschenrechner wird nicht unterstützt. Vielleicht können die Entwickler dieses Programmes da weiterhelfen.");
-            update_viewport ();
         });
 
         calc_manager.device_detected.connect ((model_name) => {
-            show_info_bar (Gtk.MessageType.INFO, "Taschenrechner des Typs \"%s\" erkannt. Taschenrechner bitte nicht trennen, während eine Verbindung hergestellt wird…".printf (model_name));
-            update_viewport ();
+            show_info_bar (Gtk.MessageType.INFO, "Taschenrechner des Typs \"%s\" erkannt. Gerät bitte nicht trennen, während eine Verbindung hergestellt wird…".printf (model_name));
         });
 
         calc_manager.frame_captured.connect ((frame) => {
@@ -117,7 +114,6 @@ public class Viewer.MainWindow : Gtk.Window {
 
         calc_manager.device_disconnected.connect (() => {
             show_info_bar (Gtk.MessageType.INFO, "Verbindung beendet. Bitte verbinde einen Taschenrechner mit diesem Computer um dessen Bildschirm hier darzustellen!");
-            update_viewport ();
         });
     }
 
@@ -138,6 +134,12 @@ public class Viewer.MainWindow : Gtk.Window {
         info_label.set_text (message);
 
         info_bar.show ();
+
+        Timeout.add (500, () => {
+            update_viewport ();
+
+            return false;
+        });
     }
 
     private void update_viewport () {
