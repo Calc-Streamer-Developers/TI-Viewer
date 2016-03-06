@@ -65,7 +65,7 @@ public class Viewer.MainWindow : Gtk.Window {
         info_bar.show_close_button = true;
         info_bar.message_type = Gtk.MessageType.INFO;
 
-        info_label = new Gtk.Label ("Laden…");
+        info_label = new Gtk.Label ("Es wird nach Taschenrechnern gesucht…");
         info_label.ellipsize = Pango.EllipsizeMode.END;
 
         info_bar.get_content_area ().add (info_label);
@@ -83,10 +83,6 @@ public class Viewer.MainWindow : Gtk.Window {
     }
 
     private void connect_signals () {
-        this.show.connect (() => {
-            info_bar.hide ();
-        });
-
         this.key_press_event.connect ((event) => {
             if (event.keyval == Gdk.Key.F11) {
                 toggle_fullscreen ();
