@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=TI-Viewer
+Comment=Anzeigeprogramm für den Taschenrechner-Bildschirm
+GenericName=ti-viewer
+Exec=ti-viewer %U
+Icon=ti-viewer
+Terminal=false
+Categories=Utility;
