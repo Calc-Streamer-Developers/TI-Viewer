@@ -1,0 +1,18 @@
+Source: ti-viewer
+Section: x11
+Priority: extra
+Maintainer: Marcus Wichelmann <marcus.wichelmann@hotmail.de>
+Build-Depends: cmake (>= 2.8),
+               debhelper (>= 9),
+               valac (>= 0.22),
+               libglib2.0-dev (>= 2.26.0),
+               libgtk-3-dev (>= 3.12),
+               libticables-dev,
+               libtifiles-dev,
+               libticalcs-dev
+
+Standards-Version: 3.9.5
+Package: ti-viewer
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: Free viewer of your calculator's screen based on libticalcs2.
