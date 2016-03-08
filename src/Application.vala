@@ -20,10 +20,57 @@
  */
 
 public class Viewer.Application : Gtk.Application {
-    public MainWindow main_window;
+    private static const uint16 SERVER_PORT = 3790;
+    private static const OptionEntry[] OPTIONS = {
+        { "server", 's', 0, OptionArg.NONE, null, "Start as server without loading the user interface", null },
+        { null }
+    };
 
-    public override void activate () {
-        if (get_windows () == null) {
+    private Backend.Server server;
+    private Backend.ServiceProvider service_provider;
+
+    private MainWindow? main_window = null;
+
+    construct {
+        flags |= ApplicationFlags.HANDLES_COMMAND_LINE;
+
+        add_main_option_entries (OPTIONS);
+    }
+
+    protected override int command_line (ApplicationCommandLine command_line) {
+        if (main_window != null) {
+            main_window.present ();
+
+            return 1;
+        }
+
+        if (!Thread.supported ()) {
+            critical ("Threading is not supported by this system.");
+
+            return 1;
+        }
+
+        VariantDict options = command_line.get_options_dict ();
+
+        if (options.contains ("server")) {
+            start_server ();
+        } else {
+            show_main_window ();
+        }
+
+        return 0;
+    }
+
+    private void start_server () {
+        server = new Backend.Server (SERVER_PORT);
+        service_provider = new Backend.ServiceProvider (SERVER_PORT);
+
+        // Keep the application running
+        this.hold ();
+    }
+
+    private void show_main_window () {
+        if (main_window == null) {
             main_window = new MainWindow (this);
             main_window.show_all ();
         } else {
@@ -32,10 +79,6 @@ public class Viewer.Application : Gtk.Application {
     }
 
     public static void main (string[] args) {
-        if (!Thread.supported ()) {
-            error ("Multi threading isn't supported by your system.");
-        }
-
         var application = new Viewer.Application ();
         application.run (args);
     }

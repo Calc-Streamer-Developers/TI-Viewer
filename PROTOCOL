@@ -1,0 +1,33 @@
+TI-Viewer Protocol
+
+Directions
+    Client => Server
+    Client <= Server
+
+Package
+    [2 BYTES] Package Length
+    [BYTES] Package (max. 2^14 bytes)
+
+
+VERSION 1
+
+=> Unsupported Device
+    [1 BYTE] Command Byte ( 1 )
+
+=> Device Detected
+    [1 BYTE] Command Byte ( 2 )
+    [STRING] Device Name
+
+One time per frame {
+    => Frame Header
+        [1 BYTE] Command Byte ( 3 )
+        [4 BYTES] JPEG-Data Size
+
+    Until frame is completed {
+        => JPEG-Data
+            [UP TO 2^14 BYTES] Data
+    }
+}
+
+=> Device Disconneted
+    [1 BYTE] Command Byte ( 4 )

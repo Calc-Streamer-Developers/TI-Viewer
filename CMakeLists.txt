@@ -21,7 +21,7 @@ ensure_vala_version ("0.18" MINIMUM)
 include (ValaPrecompile)
 
 find_package (PkgConfig)
-pkg_check_modules (DEPS REQUIRED gtk+-3.0 gthread-2.0 gio-2.0 ticables2 tifiles2 ticalcs2)
+pkg_check_modules (DEPS REQUIRED gtk+-3.0 gthread-2.0 gio-2.0 ticables2 tifiles2 ticalcs2 avahi-client avahi-gobject)
 add_definitions (${DEPS_CFLAGS})
 link_libraries (${DEPS_LIBRARIES} -lm)
 link_directories (${DEPS_LIBRARY_DIRS})

@@ -19,7 +19,7 @@ To do this you need to clone this repository and open it's root directory in a t
 ### Dependencies
 
 ```
-sudo apt-get install cmake valac libgtk-3-dev libticables-dev libtifiles-dev libticalcs-dev
+sudo apt-get install cmake valac libgtk-3-dev libticables-dev libtifiles-dev libticalcs-dev libavahi-client-dev libavahi-gobject-dev
 ```
 
 ### Compile

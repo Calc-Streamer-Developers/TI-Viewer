@@ -4,6 +4,8 @@ vala_precompile (VALA_C
     Application.vala
     MainWindow.vala
     Backend/CalcManager.vala
+    Backend/Server.vala
+    Backend/ServiceProvider.vala
 PACKAGES
     gtk+-3.0
     gio-2.0
@@ -11,6 +13,8 @@ PACKAGES
     ticables2
     tifiles2
     ticalcs2
+    avahi-client
+    avahi-gobject
 OPTIONS
     --vapidir=${CMAKE_SOURCE_DIR}/vapi/
     --thread
