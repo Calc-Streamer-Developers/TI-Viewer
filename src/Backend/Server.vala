@@ -78,7 +78,7 @@ public class Viewer.Backend.Server : ThreadedSocketService {
         uint8[] frame_data;
 
         try {
-            if (!frame.save_to_buffer (out frame_data, "jpeg", "quality", "100")) {
+            if (!frame.save_to_buffer (out frame_data, "png")) {
                 warning ("Encoding frame failed.");
 
                 return;
