@@ -133,8 +133,8 @@ public class Viewer.Backend.Server : ThreadedSocketService {
             }
 
             try {
-                connection.output_stream.write ({ (uint8)((package_length >> 8) & 0xff), (uint8)(package_length & 0xff) });
-                connection.output_stream.write (package);
+                connection.output_stream.write_all ({ (uint8)((package_length >> 8) & 0xff), (uint8)(package_length & 0xff) }, null);
+                connection.output_stream.write_all (package, null);
             } catch (Error e) {
                 warning ("Error while sending package: %s", e.message);
 
