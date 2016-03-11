@@ -19,7 +19,8 @@
  * Authored by: Marcus Wichelmann <marcus.wichelmann@hotmail.de>
  */
 
-public class Viewer.Application : Gtk.Application {
+/* Use GLib.Application to make it running on headless systems */
+public class Viewer.Application : GLib.Application {
     private static const uint16 SERVER_PORT = 3790;
     private static const OptionEntry[] OPTIONS = {
         { "server", 's', 0, OptionArg.NONE, null, "Start as server without loading the user interface", null },
@@ -65,20 +66,25 @@ public class Viewer.Application : Gtk.Application {
         server = new Backend.Server (SERVER_PORT);
         service_provider = new Backend.ServiceProvider (SERVER_PORT);
 
-        // Keep the application running
+        /* Keep the application running */
         this.hold ();
     }
 
     private void show_main_window () {
         if (main_window == null) {
-            main_window = new MainWindow (this);
+            main_window = new MainWindow ();
+            main_window.destroy.connect (Gtk.main_quit);
             main_window.show_all ();
+
+            Gtk.main ();
         } else {
             main_window.present ();
         }
     }
 
     public static void main (string[] args) {
+        Gtk.init (ref args);
+
         var application = new Viewer.Application ();
         application.run (args);
     }

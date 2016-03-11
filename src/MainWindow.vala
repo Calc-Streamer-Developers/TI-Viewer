@@ -36,9 +36,7 @@ public class Viewer.MainWindow : Gtk.Window {
 
     private bool is_fullscreened = false;
 
-    public MainWindow (Viewer.Application application) {
-        this.set_application (application);
-
+    public MainWindow () {
         calc_manager = new Backend.CalcManager ();
 
         build_ui ();
