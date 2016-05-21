@@ -33,6 +33,15 @@ namespace TiCalcs {
 
         [CCode (cname = "ticalcs_calc_recv_screen")]
         public int receive_screen (out CalcScreenCoord screen_coord, [CCode (array_length = false)] out uint8[] bitmap);
+
+        [CCode (cname = "nsp_session_open")]
+        public int open_session (uint16 port);
+
+        [CCode (cname = "nsp_cmd_s_screen_rle")]
+        public int send_screen_rle (uint8 cmd);
+
+        [CCode (cname = "nsp_cmd_r_screen_rle")]
+        public int receive_screen_rle (out uint8 cmd, out uint32 size, [CCode (array_length = false)] out uint8[] data);
     }
 
     [CCode (cname = "CalcScreenCoord")]

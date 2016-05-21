@@ -102,8 +102,12 @@ public class Viewer.Backend.CalcManager : Object {
                 TiCalcs.CalcScreenCoord screen_coord;
                 uint8[] bitmap;
 
+                if (calc_handle.open_session (0x4024) != 0) {
+                    warning ("Opening session failed.");
+                }
+
                 while (true) {
-                    if (calc_handle.receive_screen (out screen_coord, out bitmap) != 0) {
+                    if (capture_screen (calc_handle, out screen_coord, out bitmap) != 0) {
                         debug ("Hand-held disconnected.");
 
                         Idle.add (() => {
@@ -126,6 +130,74 @@ public class Viewer.Backend.CalcManager : Object {
                 }
             }
         });
+    }
+
+    private int capture_screen (TiCalcs.CalcHandle calc_handle, out TiCalcs.CalcScreenCoord screen_coord, out uint8[] bitmap) {
+        int ret = calc_handle.send_screen_rle (0);
+
+        if (ret != 0)
+            return ret;
+
+        uint8 cmd;
+        uint32 size = 0;
+        uint8[] data;
+
+        ret = calc_handle.receive_screen_rle (out cmd, out size, out data);
+
+        if (ret != 0)
+            return ret;
+
+        screen_coord.width = screen_coord.clipped_width = (((uint16)data[8]) << 8) | data[9];
+        screen_coord.height = screen_coord.clipped_height = (((uint16)data[10]) << 8) | data[11];
+
+        size = ((((uint32)data[0]) << 24)
+			  | (((uint32)data[1]) << 16)
+			  | (((uint32)data[2]) <<  8)
+			  | (((uint32)data[3])));
+
+        ret = calc_handle.receive_screen_rle (out cmd, out size, out data);
+
+        if (ret != 0)
+            return ret;
+
+        bitmap = uncompress (screen_coord, data, size);
+
+        return 0;
+    }
+
+    private uint8[] uncompress (TiCalcs.CalcScreenCoord screen_coord, uint8[] src, uint32 size) {
+        uint8[] dst = new uint8[screen_coord.width * screen_coord.height * 2];
+        int target = 0;
+
+        for(int i = 0; i < size;) {
+            int8 rec = (int8)src[i++];
+
+            if (rec >= 0) {
+                uint8 cnt = ((uint8)rec) + 1;
+                
+                for (int j = 0; j < cnt; j++) {
+                    dst[target++] = src[i + 0];
+                    dst[target++] = src[i + 1];
+                    dst[target++] = src[i + 2];
+                    dst[target++] = src[i + 3];
+                }
+
+                i += 4;
+            } else {
+                uint8 cnt = ((uint8)(-rec)) + 1;
+                
+                for (int j = 0; j < cnt; j++) {
+                    dst[target++] = src[i + 0];
+                    dst[target++] = src[i + 1];
+                    dst[target++] = src[i + 2];
+                    dst[target++] = src[i + 3];
+
+                    i += 4;
+                }
+            }
+        }
+
+        return dst;
     }
 
     private uint8[] bitmap_to_bytemap (uint8[] bitmap, uint width, uint height) {

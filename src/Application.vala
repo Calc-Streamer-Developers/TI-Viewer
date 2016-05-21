@@ -85,7 +85,7 @@ public class Viewer.Application : GLib.Application {
         server = new Backend.Server (calc_manager, SERVER_PORT);
         service_provider = new Backend.ServiceProvider (SERVER_PORT);
 
-        stdout.printf ("Server initialized on port %u", SERVER_PORT);
+        debug ("Server initialized on port %u", SERVER_PORT);
 
         /* Keep the application running */
         this.hold ();
