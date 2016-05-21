@@ -27,8 +27,8 @@ public class Viewer.Backend.Server : ThreadedSocketService {
 
     private List<SocketConnection> connections;
 
-    public Server (uint16 port) {
-        calc_manager = new CalcManager ();
+    public Server (CalcManager calc_manager, uint16 port) {
+        this.calc_manager = calc_manager;
 
         connections = new List<SocketConnection> ();
 

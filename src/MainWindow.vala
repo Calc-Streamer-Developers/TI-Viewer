@@ -36,11 +36,14 @@ public class Viewer.MainWindow : Gtk.Window {
 
     private bool is_fullscreened = false;
 
-    public MainWindow () {
-        calc_manager = new Backend.CalcManager ();
+    public MainWindow (Backend.CalcManager calc_manager, bool fullscreen) {
+        this.calc_manager = calc_manager;
 
         build_ui ();
         connect_signals ();
+
+        if (fullscreen)
+            toggle_fullscreen ();
     }
 
     private void build_ui () {
@@ -117,9 +120,9 @@ public class Viewer.MainWindow : Gtk.Window {
 
     private void toggle_fullscreen () {
         if (is_fullscreened) {
-            this.unfullscreen ();
+            base.unfullscreen ();
         } else {
-            this.fullscreen ();
+            base.fullscreen ();
         }
 
         is_fullscreened = !is_fullscreened;

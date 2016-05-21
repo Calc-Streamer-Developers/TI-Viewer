@@ -23,9 +23,13 @@
 public class Viewer.Application : GLib.Application {
     private static const uint16 SERVER_PORT = 3790;
     private static const OptionEntry[] OPTIONS = {
-        { "server", 's', 0, OptionArg.NONE, null, "Start as server without loading the user interface", null },
+        { "server", 's', 0, OptionArg.NONE, null, "Set up a streaming server", null },
+        { "no-gui", 'n', 0, OptionArg.NONE, null, "Disable user interface", null },
+        { "fullscreen", 'f', 0, OptionArg.NONE, null, "Show user interface in fullscreen", null },
         { null }
     };
+
+    private Backend.CalcManager calc_manager;
 
     private Backend.Server server;
     private Backend.ServiceProvider service_provider;
@@ -51,28 +55,45 @@ public class Viewer.Application : GLib.Application {
             return 1;
         }
 
+        calc_manager = new Backend.CalcManager ();
+
         VariantDict options = command_line.get_options_dict ();
 
         if (options.contains ("server")) {
             start_server ();
-        } else {
-            show_main_window ();
+        }
+
+        if (!options.contains ("no-gui")) {
+            string[] args = command_line.get_arguments ();
+		    string*[] _args = new string[args.length];
+
+		    for (int i = 0; i < args.length; i++) {
+			    _args[i] = args[i];
+		    }
+
+            unowned string[] tmp = _args;
+
+            Gtk.init (ref tmp);
+
+            show_main_window (options.contains ("fullscreen"));
         }
 
         return 0;
     }
 
     private void start_server () {
-        server = new Backend.Server (SERVER_PORT);
+        server = new Backend.Server (calc_manager, SERVER_PORT);
         service_provider = new Backend.ServiceProvider (SERVER_PORT);
+
+        stdout.printf ("Server initialized on port %u", SERVER_PORT);
 
         /* Keep the application running */
         this.hold ();
     }
 
-    private void show_main_window () {
+    private void show_main_window (bool fullscreen) {
         if (main_window == null) {
-            main_window = new MainWindow ();
+            main_window = new MainWindow (calc_manager, fullscreen);
             main_window.destroy.connect (Gtk.main_quit);
             main_window.show_all ();
 
@@ -83,8 +104,6 @@ public class Viewer.Application : GLib.Application {
     }
 
     public static void main (string[] args) {
-        Gtk.init (ref args);
-
         var application = new Viewer.Application ();
         application.run (args);
     }
