@@ -132,7 +132,10 @@ public class Viewer.Backend.CalcManager : Object {
         });
     }
 
-    private int capture_screen (TiCalcs.CalcHandle calc_handle, out TiCalcs.CalcScreenCoord screen_coord, out uint8[] bitmap) {
+    private int capture_screen (TiCalcs.CalcHandle calc_handle, out TiCalcs.CalcScreenCoord screen_coord, out uint8[] bitmap) {        
+        screen_coord = TiCalcs.CalcScreenCoord();
+        bitmap = {};
+
         int ret = calc_handle.send_screen_rle (0);
 
         if (ret != 0)
