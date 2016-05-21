@@ -120,7 +120,9 @@ public class Viewer.Backend.CalcManager : Object {
                     }
 
                     uint8[] bytemap = bitmap_to_bytemap (bitmap, screen_coord.width, screen_coord.height);
-                    Gdk.Pixbuf pixbuf = new Gdk.Pixbuf.from_data (bytemap, Gdk.Colorspace.RGB, false, 8, (int)screen_coord.width, (int)screen_coord.height, 3 * (int)screen_coord.width, null);
+                    Gdk.Pixbuf pixbuf = new Gdk.Pixbuf.from_data (bytemap, Gdk.Colorspace.RGB, false, 8, (int)screen_coord.width, (int)screen_coord.height, 3 * (int)screen_coord.width, data => {
+                        g_free(data);
+                    });
 
                     Idle.add (() => {
                         frame_captured (pixbuf);
